@@ -1,0 +1,271 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<iostream>
+using namespace std;
+#define MAXSIZE 100
+typedef struct Node
+{
+	char data;
+	struct Node*lchild,*rchild;
+}*BiTree,BiNode;
+
+
+void Create(BiTree& T)
+{
+	char ch=' ';
+	ch=getchar();
+	if(ch==' ')
+	{
+		ch=getchar();
+	}
+	if(ch=='#')
+	{
+		T=NULL;
+	}
+	else
+	{
+		T=new BiNode;
+		T->data=ch;
+		Create(T->lchild);
+		Create(T->rchild);
+	}
+}
+
+
+void xtraverse(BiTree& T)//先序遍历
+{
+	if(T)
+	{
+		cout<<T->data;
+		xtraverse(T->lchild);
+		xtraverse(T->rchild);
+	}
+}
+void ztraverse(BiTree& T)
+{
+	if(T)
+	{
+		ztraverse(T->lchild);
+    cout<<T->data;
+		ztraverse(T->rchild);
+	}
+}
+void htraverse(BiTree& T)
+{
+	if(T)
+	{
+	
+		htraverse(T->lchild);
+		htraverse(T->rchild);
+		cout<<T->data;
+	}
+}
+typedef struct 
+{
+    BiNode* bt;  
+    int isFirst; 
+}SElemType;
+typedef struct
+{
+    SElemType leaf[MAXSIZE];
+    int top;
+} Stack;
+void initStack(Stack& s)
+{
+    s.top=0;//初始化
+}
+void push(Stack &s,SElemType n)
+{
+    s.leaf[s.top]=n;
+    s.top++;//进栈
+}
+SElemType pop(Stack &s) //出栈并返回栈顶元素
+{
+    SElemType x=s.leaf[s.top-1];
+    s.top--;
+    return x;
+}
+int isEmpty(Stack s)
+{
+    if(s.top==0) return 1;  //空
+    return 0;   //非空
+}
+
+Stack getPath(BiTree& T,char x)
+{
+    Stack s;
+    initStack(s);
+    SElemType elem;
+    while(T||!isEmpty(s))
+    {
+        //所有左孩子入栈
+        while(T)
+        {
+            elem.isFirst=1;    //第一次访问
+            elem.bt=T;
+            push(s,elem);
+            if(T->data==x) return s;    //找到指定结点，返回。
+            T=T->lchild;
+        }
+        if(!isEmpty(s))
+        {
+            elem=pop(s);
+            T=elem.bt->rchild;
+            //如果第一次访问该节点(即还有右子树没有查找)，出栈后取其右孩子后，更改访问状态再放回
+            if(elem.isFirst==1)
+            {
+                elem.isFirst=0;
+                push(s,elem);
+            }
+        }
+    }
+    return s;
+}
+
+void find (BiTree& T,char x)
+{
+	
+	Stack sta,s;
+	SElemType t;
+	initStack(s);
+    sta=getPath(T,x);
+	while(!isEmpty(sta))
+	{
+	t=pop(sta);
+	push(s,t);
+	}
+    cout<<"路径为：";
+    if(isEmpty(s))
+        cout<<"不存在"<<endl;
+    else
+    {
+        while(!isEmpty(s))
+        {
+            cout<<pop(s).bt->data<<" ";
+        }
+	}
+}
+
+	int LeafNodeCount(BiTree& T)//求叶子结点个数
+{
+	if(T==NULL)
+		return 0; //如果是空树，则叶子结点个数为0
+	else if(T->lchild==NULL&&T->rchild==NULL)
+		return 1; //判断结点是否是叶子结点（左孩子右孩子都为空），若是则返回1
+	else
+		return LeafNodeCount(T->lchild)+LeafNodeCount(T->rchild);
+}
+
+	int Depth (BiTree& T)//求深度
+{
+	if(T==NULL){
+		return 0;
+	}
+	else{
+		if(Depth(T->lchild) > Depth(T->rchild)) return (Depth(T->lchild) + 1);
+		else return (Depth(T->rchild) + 1);
+	}
+}
+void ChangeLR(BiTree &T)//左右子树交换
+{
+	BiTree temp;
+	if(T->lchild==NULL&&T->rchild==NULL)
+		return;
+	else
+	{
+		temp = T->lchild;
+		T->lchild = T->rchild;
+		T->rchild = temp;
+	}//交换左右孩子
+	ChangeLR(T->lchild);  //递归交换左子树
+	ChangeLR(T->rchild);  //递归交换右子树
+}
+
+int main()
+{
+	int flag;
+	cout<<"首先是按照先序遍历次序输入二叉树中结点的值来构造一颗二叉树T"<<endl;
+	BiTree T=NULL;
+	Create(T);
+	for(;;)
+	{
+	system("cls");
+	cout<<"选择想要进行的对于二叉树的操作"<<endl;
+	cout<<"如果想要对二叉树进行中序遍历则令flag=1"<<endl;
+	cout<<"如果想要对二叉树进行先序遍历则令flag=2"<<endl;
+	cout<<"如果想要对二叉树进行后序遍历则令flag=3"<<endl;
+	cout<<"编写算法实现求二叉树T中指定结点的路径，即从键盘输入二叉树T的任一结点，可以输出从根结点到该结点所经历的结点,如果实现该操作则令flag=4"<<endl;
+	cout<<"如果想要统计二叉树叶子结点的个数，则令flag=5"<<endl;
+	cout<<"如果想要对二叉树的深度求解，则令flag=6"<<endl;
+	cout<<"如果想要对二叉树进行左右子树交换,则令flag=7，最后选择方式输出"<<endl;
+	cout<<"退出则令flag=8"<<endl;
+	cin>>flag;
+	if(flag==1)
+	{
+		ztraverse(T);
+		cout<<endl;
+	}
+	if(flag==2)
+	{
+		xtraverse(T);
+		cout<<endl;
+	}
+	if(flag==3)
+	{
+		htraverse(T);
+		cout<<endl;
+	}
+	if(flag==4)
+	{	
+	char x;
+     cout<<"输入要查找的结点数据"<<endl;
+    cin>>x;
+	find(T,x);
+	cout<<endl;
+	}
+	if(flag==5)
+	{
+		int c;
+		c=LeafNodeCount(T);
+		cout<<c<<endl;
+	}
+	if(flag==6)
+	{
+		int d;
+		d= Depth (T);
+		cout<<d<<endl;
+	}
+	if(flag==7)
+	{
+		ChangeLR(T);
+		int a;
+		printf("可以选择输出方式\n");
+		printf("选择先序输出，则令a=1\n");
+		printf("选择后序输出，则令a=2\n");
+	    printf("选择中序输出，则令a=3\n");
+		cin>>a;
+		if(a==1)
+		{
+			xtraverse(T);
+			
+
+		}
+		if(a==2)
+		{
+			htraverse(T);
+
+		}
+		if(a==3)
+		{
+			ztraverse(T);
+
+		}
+		cout<<endl;
+	}
+	if(flag==8)
+		break;
+	system("pause");
+	}
+	return 0;
+
+}
