@@ -1,0 +1,199 @@
+#include<stdlib.h>
+#include<stdio.h>
+#include <iostream>
+#include<ctime>
+#include<math.h>
+FILE*fp;
+int number;//代表题目的数量
+int type;//代表题目的类型，包括加减乘除或是混合运算
+int range;//题目中最大数的范围，将题目运算控制在一定的范围，比如10以内，100以内
+int bracket;//题目中是否需要括号
+int decimals;//题目中是否需要小数
+int shuchu;//题目是否需要输出到文件
+char aa;
+void menu()//菜单
+{
+	printf("请根据下面的指示选择您想要的题目格式吧！\n");
+	printf("***********************************************************\n");
+	printf("请问您想要生成多少道计算题呢？\n");
+	scanf_s("%d", &number);
+	printf("***********************************************************\n");
+	printf("请选择题目运算符：加法请输入1，减法请输入2，乘法请输入3，除法请输入4,混合运算请输入5\n");
+	scanf_s("%d", &type);
+	printf("***********************************************************\n");
+	printf("您想要生成的计算题是在十以内还是百以内，又或者是千以内呢？\n");
+	printf("十以内请输入10，百以内请输入100，千以内请输入1000\n");
+	scanf_s("%d", &range);
+	printf("***********************************************************\n");
+	printf("请问您生成的计算题中是否需要括号运算？1代表您想要，0代表您不需要\n");
+	scanf_s("%d", &bracket);
+	printf("***********************************************************\n");
+	printf("请问您的题目中是否需要小数运算，1代表您想要，0代表您不想要\n");
+	scanf_s("%d", &decimals);
+	printf("***********************************************************\n");
+	printf("您可以选择将题目输出到文件中，1代表需要，2代表不需要\n");
+	scanf_s("%d", &shuchu);
+	printf("好的，题目马上生成。\n");
+	//system("pause");
+}
+void add(int number, int range, int bracket, int decimals,int type)//加减乘除法运算题目生成
+{
+	float a, b, c, d, e;
+	char op[4] = { '+', '-', '*', '/' };
+	char aa=op[type-1];
+	if (type == 1)
+	{
+		char aa = '+';
+	}
+	if (type == 2)
+	{
+		char aa = '-';
+	}
+	if (type == 3)
+	{
+		char aa = '*';
+	}
+	if (type == 4)
+	{
+		char aa = '/';
+	}
+	if (type == 5)
+	{
+		return;
+	}
+	srand((unsigned)time(NULL));
+	if (bracket == 0 && decimals == 0)//不需要括号运算，也不需要小数运算
+	{
+		for (int i = 0; i < number; i++)
+		{
+			a = rand() % range;
+			b = rand() % range;
+			c = rand() % range;
+			d = rand() % range;
+			printf("%.0f%c%.0f%c%.0f%c%.0f=\n", a, aa, b, aa, c, aa, d);
+			fprintf(fp, "%.0f%c%.0f%c%.0f%c%.0f=\n", a, aa, b, aa, c, aa, d);
+		}
+		fclose(fp);
+	}
+	if (decimals == 1&&bracket==0)//需要小数运算但不需要括号计算
+	{
+		for (int i = 0; i < number; i++)
+		{
+			double a = (double)rand() / RAND_MAX * range; // 生成range之间的小数
+			double b = (double)rand() / RAND_MAX * range;
+			double c = (double)rand() / RAND_MAX * range;
+			double d = (double)rand() / RAND_MAX * range;
+			printf("%.2f%c%.2f%c%.2f%c%.2f=\n", a, aa, b, aa, c, aa, d);
+			fprintf(fp, "%.2f%c%.2f%c%.2f%c%.2f=\n", a, aa, b, aa, c, aa, d);
+		}
+		fclose(fp);
+	}
+	if (bracket == 1&&decimals==0)//需要括号计算但不需要小数计算
+	{
+		for (int i = 0; i < number; i++)
+		{
+			a = rand() % range;
+			b = rand() % range;
+			c = rand() % range;
+			d = rand() % range;
+			printf("（%.0f%c%.0f）%c（%.0f%c%.0f）=\n", a, aa, b, aa, c, aa, d);
+			fprintf(fp, "（%.0f%c%.0f）%c（%.0f%c%.0f）=\n", a, aa, b, aa, c, aa, d);
+		}
+		fclose(fp);
+
+	}
+	if (decimals == 1 && bracket == 1)//需要小数运算且需要括号计算
+	{
+		for (int i = 0; i < number; i++)
+		{
+			double a = (double)rand() / RAND_MAX * range; // 生成range之间的小数
+			double b = (double)rand() / RAND_MAX * range;
+			double c = (double)rand() / RAND_MAX * range;
+			double d = (double)rand() / RAND_MAX * range;
+			printf("（%.2f%c%.2f）%c（%.2f%c%.2f）=\n", a, aa, b, aa, c, aa, d);
+			fprintf(fp, "（%.2f%c%.2f）%c（%.2f%c%.2f）=\n", a, aa, b, aa, c, aa, d);
+		}
+		fclose(fp);
+	}
+}
+void mix(int number, int range, int bracket, int decimals,int type)//混合运算题目生成
+{
+	float a, b, c, d, e;
+	char op[4] = { '+', '-', '*', '/' };
+	//char aa = '-';
+	srand((unsigned)time(NULL));
+	if (bracket == 0 && decimals == 0)//不需要括号运算，也不需要小数运算
+	{
+		for (int i = 0; i < number; i++)
+		{
+			//char aa = op[rand() % 4];
+			a = rand() % range;
+			b = rand() % range;
+			c = rand() % range;
+			d = rand() % range;
+			printf("%.0f%c%.0f%c%.0f%c%.0f=\n", a, op[rand() % 4], b, op[rand() % 4], c, op[rand() % 4], d);
+			fprintf(fp, "%.0f%c%.0f%c%.0f%c%.0f=\n", a, op[rand() % 4], b, op[rand() % 4], c, op[rand() % 4], d);
+		}
+		fclose(fp);
+	}
+	if (decimals == 1 && bracket == 0)//需要小数运算但不需要括号计算
+	{
+		for (int i = 0; i < number; i++)
+		{
+			char aa = op[rand() % 4];
+			double a = (double)rand() / RAND_MAX * range; // 生成range之间的小数
+			double b = (double)rand() / RAND_MAX * range;
+			double c = (double)rand() / RAND_MAX * range;
+			double d = (double)rand() / RAND_MAX * range;
+			printf("%.2f%c%.2f%c%.2f%c%.2f=\n", a, op[rand() % 4], b, op[rand() % 4], c, op[rand() % 4], d);
+			fprintf(fp, "%.2f%c%.2f%c%.2f%c%.2f=\n", a, op[rand() % 4], b, op[rand() % 4], c, op[rand() % 4], d);
+		}
+		fclose(fp);
+	}
+	if (bracket == 1 && decimals == 0)//需要括号计算但不需要小数计算
+	{
+		for (int i = 0; i < number; i++)
+		{
+			char aa = op[rand() % 4];
+			a = rand() % range;
+			b = rand() % range;
+			c = rand() % range;
+			d = rand() % range;
+			printf("（%.0f%c%.0f）%c（%.0f%c%.0f）=\n", a, op[rand() % 4], b, op[rand() % 4], c, op[rand() % 4], d);
+			fprintf(fp, "（%.0f%c%.0f）%c（%.0f%c%.0f）=\n", a, op[rand() % 4], b, op[rand() % 4], c, op[rand() % 4], d);
+		}
+		fclose(fp);
+
+	}
+	if (decimals == 1 && bracket == 1)//需要小数运算且需要括号计算
+	{
+		for (int i = 0; i < number; i++)
+		{
+			double a = (double)rand() / RAND_MAX * range; // 生成range之间的小数
+			double b = (double)rand() / RAND_MAX * range;
+			double c = (double)rand() / RAND_MAX * range;
+			double d = (double)rand() / RAND_MAX * range;
+			printf("（%.2f%c%.2f）%c（%.2f%c%.2f）=\n", a, op[rand() % 4], b, op[rand() % 4], c, op[rand() % 4], d);
+			fprintf(fp, "（%.2f%c%.2f）%c（%.2f%c%.2f）=\n", a, op[rand() % 4], b, op[rand() % 4], c, op[rand() % 4], d);
+		}
+		fclose(fp);
+	}
+}
+int main()
+{
+	
+	menu();
+	if (shuchu == 1)
+	{
+		errno_t err = fopen_s(&fp, "D:\\data.txt", "w");;
+	}
+	if (type == 5)
+	{
+		mix(number, range, bracket, decimals,type);
+	}
+	else
+	{
+		add(number, range, bracket, decimals,type);
+	}
+	system("pause");
+}
